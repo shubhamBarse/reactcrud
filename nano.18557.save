@@ -1,0 +1,32 @@
+server {
+    listen 80;
+    server_name local.reactcrud.com;
+
+    # Root directory for your project
+    root /var/www/html/reactcrud;
+    index index.php index.html;
+
+    # Main location block for handling React and PHP
+    location / {
+        # Serve files if they exist, otherwise route to index.php
+        try_files $uri /index.php;
+    }
+
+    # PHP handling
+    location ~ \.php$ {
+        include snippets/fastcgi-php.conf;
+        fastcgi_pass unix:/var/run/php/php8.2-fpm.sock;  # Adjust PHP version if needed
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+        include fastcgi_params;
+    }
+
+    # Enable CORS
+    add_header Access-Control-Allow-Origin *;
+    add_header Access-Control-Allow-Methods "GET, POST, OPTIONS";
+    add_header Access-Control-Allow-Headers "Origin, Content-Type, Accept";
+
+    # Log files
+    access_log /var/log/nginx/reactcrud.access.log;
+    error_log /var/log/nginx/reactcrud.error.log;
+}
+
